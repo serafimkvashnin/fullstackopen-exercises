@@ -1,0 +1,58 @@
+html {
+    font-family: "Open Sans", sans-serif;
+    font-size: 20px;
+    background-color: rgb(220, 220, 220);
+}
+
+.shadow {
+    border-radius: 15px;
+    box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.333);
+}
+
+.shadow-hover:hover {
+    box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.333);
+    border-radius: 15px;
+    padding-left: 10px;
+}
+
+h1 {
+    background-color: white;
+    padding: 10px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+p {
+    color: green;
+    text-align: left;
+}
+
+ul,
+ol {
+    text-align: left;
+}
+
+#banana {
+    color: rgb(255, 191, 0);
+}
+
+.container {
+    background-color: white;
+    padding: 15px;
+    margin: 50px;
+}
+
+img:hover {
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.333);
+}
+
+img {
+    border-radius: 15px;
+    margin: 0 auto;
+    display: block;
+    width: 50%;
+}
+
+li:hover {
+    font-weight: bold;
+}
