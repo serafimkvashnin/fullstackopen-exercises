@@ -1,33 +1,26 @@
 const App = () => {
   const course = 'Half Stack application development'
 
-  const exercises = [
-    {
-      name:'Fundamentals of React', 
-      count:10
-    },
-    {
-      name:'Using props to pass data', 
-      count:7
-    },
-    {
-      name:'State of a component', 
-      count:14
-    }
-  ]
+  const part1 = {
+    name:'Fundamentals of React', 
+    count:10
+  }
 
-  const totalCountText = 'Number of exercises'
-  let totalCount = 0
-  for (let index = 0; index < exercises.length; index++) {
-    const element = exercises[index];
-    totalCount += element.count;
+  const part2 = {
+    name:'Using props to pass data', 
+    count:7
+  }
+
+  const part3 = {
+    name:'State of a component', 
+    count:14
   }
 
   return (
     <>
       <Header course={course} />
-      <Content exercises={exercises} />
-      <Total text={totalCountText} count={totalCount} />
+      <Content exercises={[part1, part2, part3]} />
+      <Total exercises={[part1, part2, part3]} />
     </>
   )
 }
@@ -43,21 +36,26 @@ const Header = ({ course }) => {
 const Content = ({ exercises }) => {
   return (
     <div>
-      {exercises.map((exercise, i) => <Part key={i} exerciseName={exercise.name} exerciseCount={exercise.count}/>)}
+      {exercises.map((exercise, i) => <Part key={i} exercise={exercise}/>)}
     </div>
   )
 }
 
-const Part = ({ exerciseName, exerciseCount }) => {
+const Part = ({ exercise }) => {
   return (
-    <p> {exerciseName} {exerciseCount} </p>
+    <p> {exercise.name} {exercise.count} </p>
   )
 }
 
-const Total = ({ text, count }) => {
+const Total = ({ exercises }) => {
+  const totalCount = {
+    text:'Number of exercises',
+    count:exercises.reduce((sum, item) => sum + item.count, 0)
+  }
+
   return (
     <footer>
-      <p>{text} {count}</p>
+      <p>{totalCount.text} {totalCount.count}</p>
     </footer>
   )
 }
