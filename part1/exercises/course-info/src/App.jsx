@@ -31,34 +31,12 @@ const App = () => {
   )
 }
 
-const Header = ({ course }) => {
-  return (
-    <header>
-      <h1>{course}</h1>
-    </header>
-  )
-}
+const Header = ({ course }) => <h1>{course}</h1>
 
-const Content = ({ parts }) => {
-  return (
-    <div>
-      {parts.map((exercise, i) => <Part key={i} exercise={exercise}/>)}
-    </div>
-  )
-}
+const Content = ({ parts }) => parts.map((exercise, i) => <Part key={i} exercise={exercise}/>)
 
-const Part = ({ exercise }) => {
-  return (
-    <p> {exercise.name} {exercise.count} </p>
-  )
-}
+const Part = ({ exercise }) => <p> {exercise.name} {exercise.count} </p>
 
-const Total = ({ total }) => {
-  return (
-    <footer>
-      <p>{total.name} {total.count}</p>
-    </footer>
-  )
-}
+const Total = ({ total }) => <p>{total.name} {total.count}</p>
 
 export default App
