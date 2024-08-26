@@ -25,35 +25,36 @@ const App = () => {
 
   return (
     <>
-      <Header title={course} />
+      <Header course={course} />
       <Content exercises={exercises} />
-      <Footer text={totalCountText} count={totalCount} />
+      <Total text={totalCountText} count={totalCount} />
     </>
   )
 }
 
-const Header = ({ title }) => {
+const Header = ({ course }) => {
   return (
     <header>
-      <h1>{title}</h1>
+      <h1>{course}</h1>
     </header>
   )
 }
 
 const Content = ({ exercises }) => {
-  const list = []
-  for (let index = 0; index < exercises.length; index++) {
-    const exercise = exercises[index];
-    list[index] = <p key={index}> {exercise.name} {exercise.count} </p>
-  }
   return (
-    <div className="content">
-      {list}
+    <div>
+      {exercises.map((exercise, i) => <Part key={i} exerciseName={exercise.name} exerciseCount={exercise.count}/>)}
     </div>
   )
 }
 
-const Footer = ({ text, count }) => {
+const Part = ({ exerciseName, exerciseCount }) => {
+  return (
+    <p> {exerciseName} {exerciseCount} </p>
+  )
+}
+
+const Total = ({ text, count }) => {
   return (
     <footer>
       <p>{text} {count}</p>
