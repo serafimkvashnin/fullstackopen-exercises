@@ -61,14 +61,10 @@ const AnecdoteOfTheDay = ({ anecdote, votesCount }) => <>
   <p>Has {votesCount} votes</p>
 </>
 
-const MostVotedAnecdote = ({ anecdotes, mostVoted }) => {
-  return (
-    <>    
-      <h1>Anecdote with most votes</h1>
-      <p>{mostVoted > -1 ? anecdotes[mostVoted] : "Vote for anecdote you like"}</p>
-    </>
-  )
-}
+const MostVotedAnecdote = ({ anecdotes, mostVoted }) => <> 
+  <h1>Anecdote with most votes</h1>
+  <p>{mostVoted > -1 ? anecdotes[mostVoted] : "Vote for anecdote you like"}</p>
+</>
 
 const Button = ({ text, onClick }) => <button onClick={onClick}>{text}</button>
 
