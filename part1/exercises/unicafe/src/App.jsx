@@ -5,23 +5,20 @@ function App() {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
 
-  const feedback = [
-    {
-      name: "good",
+  const feedback = {
+    good: {
       count: good,
       leaveFeedback: () => setGood(good + 1)
     },
-    {
-      name: "neutral",
+    neutral: {
       count: neutral,
       leaveFeedback: () => setNeutral(neutral + 1)
     },
-    {
-      name: "bad",
+    bad: {
       count: bad,
       leaveFeedback: () => setBad(bad + 1)
     }
-  ]
+  }
 
   return (
     <>
@@ -36,15 +33,32 @@ const Button = ({ text, onClick }) => <button onClick={onClick}>{text}</button>
 const Feedback = ({ feedback }) => (
   <div>
     <h1>give feedback</h1>
-    {feedback.map((item, i) => <Button key={i} text={item.name} onClick={item.leaveFeedback}/>)}
+    {Object.entries(feedback).map(([key, item], i) => 
+      <Button 
+        key={i} 
+        text={key} 
+        onClick={item.leaveFeedback}
+      />
+    )}
   </div>
 )
 
-const Statistics = ({ feedback }) => (
-  <div>
-    <h1>statistics</h1>
-    {feedback.map((item, i) => <p key={i}>{item.name} {item.count}</p>)}
-  </div>
-) 
+const Statistics = ({ feedback }) => {
+  const good = feedback.good.count
+  const neutral = feedback.neutral.count
+  const bad = feedback.bad.count
+  const totalFeedback = good + neutral + bad
+  const averageScore = totalFeedback > 0 ? (good - bad) / totalFeedback : 0
+  const positivePercentage = totalFeedback > 0 ? good / totalFeedback * 100 : 0
+  return (
+    <div>
+      <h1>statistics</h1>
+      {Object.entries(feedback).map(([key, item], i) => <p key={i}>{key}: {item.count}</p>)}
+      <p>all: {totalFeedback}</p>
+      <p>average: {averageScore}</p>
+      <p>positive: {positivePercentage}%</p>
+    </div>
+  ) 
+}
 
 export default App
