@@ -56,12 +56,14 @@ const Statistics = ({ feedback }) => {
   return (
     <div>
       <h1>statistics</h1>
-      {Object.entries(feedback).map(([key, item], i) => <p key={i}>{key}: {item.count}</p>)}
-      <p>all: {totalFeedback}</p>
-      <p>average: {averageScore}</p>
-      <p>positive: {positivePercentage}%</p>
+      {Object.entries(feedback).map(([key, item], i) => <StatisticLine key={i} name={key} value={item.count}/>)}
+      <StatisticLine name="all" value={totalFeedback}/>
+      <StatisticLine name="average" value={averageScore}/>
+      <StatisticLine name="positive" value={positivePercentage + "%"}/>
     </div>
   ) 
 }
+
+const StatisticLine = ({ name, value }) => <p>{name}: {value}</p>
 
 export default App
