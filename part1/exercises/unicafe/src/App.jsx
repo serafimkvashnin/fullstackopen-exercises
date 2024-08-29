@@ -43,27 +43,45 @@ const Feedback = ({ feedback }) => (
   </div>
 )
 
-const Statistics = ({ feedback }) => {
+const calculateStatistics = (feedback) => {
   const good = feedback.good.count
   const neutral = feedback.neutral.count
   const bad = feedback.bad.count
   const totalFeedback = good + neutral + bad
 
-  if (!totalFeedback) return <p>No feedback given</p>
+  if (!totalFeedback) return null
 
   const averageScore = (good - bad) / totalFeedback
   const positivePercentage = good / totalFeedback * 100
+
+  return { totalFeedback, averageScore, positivePercentage }
+}
+
+const Statistics = ({ feedback }) => {
+  const statistics = calculateStatistics(feedback)
+
+  if (!statistics) return <p>No feedback given</p>
+
+  const { totalFeedback, averageScore, positivePercentage } = statistics
+  
   return (
     <div>
       <h1>statistics</h1>
-      {Object.entries(feedback).map(([key, item], i) => <StatisticLine key={i} name={key} value={item.count}/>)}
-      <StatisticLine name="all" value={totalFeedback}/>
-      <StatisticLine name="average" value={averageScore}/>
-      <StatisticLine name="positive" value={positivePercentage + "%"}/>
+      <table>
+        <tbody>
+        {Object.entries(feedback).map(([key, item], i) => <StatisticLine key={i} name={key} value={item.count}/>)}
+        <StatisticLine name="all" value={totalFeedback}/>
+        <StatisticLine name="average" value={averageScore}/>
+        <StatisticLine name="positive" value={positivePercentage + "%"}/>
+        </tbody>
+      </table>
     </div>
   ) 
 }
 
-const StatisticLine = ({ name, value }) => <p>{name}: {value}</p>
+const StatisticLine = ({ name, value }) => <tr>
+  <td>{name}</td> 
+  <td>{value}</td>
+</tr>
 
 export default App
