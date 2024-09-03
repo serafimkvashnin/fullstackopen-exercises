@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Note from './components/Note'
-import axios from 'axios'
+import Notification from './components/Notification'
 import { useEffect } from 'react'
 import noteService from './services/notes'
 
@@ -8,6 +8,7 @@ const App = () => {
   const [ notes, setNotes ] = useState([])
   const [ newNoteText, setNewNoteText ] = useState("a new note...")
   const [ showAll, setShowAll ] = useState(true)
+  const [ errorMessage, setErrorMessage ] = useState('Error occured.')
 
   useEffect(() => {
     noteService
@@ -38,7 +39,7 @@ const App = () => {
       .patch(note.id, newNote)
       .then(returnedNote => setNotes(notes.map(n => n.id !== note.id ? n : returnedNote)))
       .catch(error => {
-        alert(`The note '${note.content}' was already deleted from server!`)
+        setErrorMessage(`The note '${note.content}' was already deleted from server!`)
         setNotes(notes.filter(n => n.id !== note.id))
       })
   }
@@ -50,6 +51,10 @@ const App = () => {
   return (
     <>
       <h1>Notes</h1>
+      <Notification 
+        message={errorMessage} 
+        onClose={() => setErrorMessage(null)}
+      />
       <div>
         <label>
           <input 
@@ -78,7 +83,22 @@ const App = () => {
         />
         <button type="submit">Save</button>
       </form>
+      <Footer />
     </>
+  )
+}
+
+const Footer = () => {
+  const footerStyle = {
+    color: 'green',
+    fontStyle: 'italic',
+    fontSize: 16
+  }
+  return (
+    <div style={footerStyle}>
+      <br />
+      <em>Note app, Department of Computer Science, University of Helsinki 2024</em>
+    </div>
   )
 }
 
