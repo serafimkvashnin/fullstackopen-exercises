@@ -1,11 +1,19 @@
 import { useState } from 'react'
 import Note from './components/Note'
+import axios from 'axios'
+import { useEffect } from 'react'
 
-const App = (props) => {
-  const [ notes, setNotes ] = useState(props.notes)
+const App = () => {
+  const [ notes, setNotes ] = useState([])
   const [ newNoteText, setNewNoteText ] = useState("a new note...")
   const [ showAll, setShowAll ] = useState(true)
 
+  useEffect(() => {
+    axios.get('http://localhost:3001/notes').then(response => {
+      setNotes(response.data)
+    })
+  }, [])
+  
   const addNote = (event) => {
     event.preventDefault()
     const newNote = {
