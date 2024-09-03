@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Note from './components/Note'
 import axios from 'axios'
 import { useEffect } from 'react'
+import noteService from './services/notes'
 
 const App = () => {
   const [ notes, setNotes ] = useState([])
@@ -9,20 +10,37 @@ const App = () => {
   const [ showAll, setShowAll ] = useState(true)
 
   useEffect(() => {
-    axios.get('http://localhost:3001/notes').then(response => {
-      setNotes(response.data)
-    })
+    noteService
+      .getAll()
+      .then(returnedNotes => setNotes([...returnedNotes]))
   }, [])
   
   const addNote = (event) => {
     event.preventDefault()
     const newNote = {
-      id: notes.length + 1,
       content: newNoteText,
       important: Math.random() > 0.5
     }
-    setNotes(notes.concat(newNote))
-    setNewNoteText("")
+    
+    noteService
+      .create(newNote)
+      .then(returnedNote => {
+        setNotes(notes.concat(returnedNote))
+        setNewNoteText("")
+      })
+  }
+
+  const handleToggleImportance = (note) => {
+    const newNote = {
+      important: !note.important
+    }
+    noteService
+      .patch(note.id, newNote)
+      .then(returnedNote => setNotes(notes.map(n => n.id !== note.id ? n : returnedNote)))
+      .catch(error => {
+        alert(`The note '${note.content}' was already deleted from server!`)
+        setNotes(notes.filter(n => n.id !== note.id))
+      })
   }
 
   const notesToShow = showAll 
@@ -47,6 +65,7 @@ const App = () => {
           <Note 
             key={note.id} 
             note={note}
+            onToggleImportance={handleToggleImportance}
           />
         )}
       </ul>
