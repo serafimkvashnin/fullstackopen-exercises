@@ -1,23 +1,50 @@
 const express = require('express')
 const app = express()
 
+app.use(express.json())
+
 let notes = [
     {
-      id: "1",
+      id: 1,
       content: "HTML is easy",
       important: true
     },
     {
-      id: "2",
+      id: 2,
       content: "Browser can execute only JavaScript",
       important: false
     },
     {
-      id: "3",
+      id: 3,
       content: "GET and POST are the most important methods of HTTP protocol",
       important: true
     }
 ]
+
+const generateId = () => {
+    return notes.length > 0 
+        ? Math.max(...notes.map(n => n.id)) + 1 
+        : 0
+}
+
+app.post('/api/notes', (request, response) => {
+    const body = request.body
+
+    if (!body.content) {
+        return response.status(400).json({
+            error: 'content missing'
+        })
+    }
+
+    const note = {
+        content: body.content,
+        important: Boolean(body.important),
+        id: generateId()
+    }
+
+    notes.push(note)
+    response.json(note)
+})
 
 app.get('/', (request, response) => {
     response.send('<h1>Hello world!</h1>')
