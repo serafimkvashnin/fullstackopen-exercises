@@ -4,7 +4,7 @@
     "main": "index.js",
     "scripts": {
         "build:ui": "rm -rf dist && cd C:/Users/seraf/Projects/Web/fullstackopen-exercises/part2/exercises/the-phonebook && npm run build && cp -r dist C:/Users/seraf/Projects/Web/fullstackopen-exercises/part3/exercises/the-phonebook-backend",
-        "deploy:full": "npm run build:ui && git add . && git commit -m \"Deploy The Phonebook to Render\"",
+        "deploy:full": "npm run build:ui && git add . && git commit -m \"Deploy The Phonebook to Render\" && git push",
         "start": "node index.js",
         "dev": "nodemon index.js",
         "test": "echo \"Error: no test specified\" && exit 1"
