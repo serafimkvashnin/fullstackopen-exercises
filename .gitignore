@@ -66,5 +66,3 @@ Thumbs.db
 !.gitignore
 !.nvmrc
 !.phpcs.xml.dist
-
-the-phonebook-backend
