@@ -1,19 +1,21 @@
 {
-  "name": "a",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Serafim Kvashnin",
-  "license": "MIT",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.19.2"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.4"
-  }
+    "name": "a",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "build:ui": "rm -rf dist && cd C:/Users/seraf/Projects/Web/fullstackopen-exercises/part2/course/a && npm run build && cp -r dist C:/Users/seraf/Projects/Web/fullstackopen-exercises/part3/course/a",
+        "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
+        "start": "node index.js",
+        "dev": "nodemon index.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Serafim Kvashnin",
+    "license": "MIT",
+    "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^4.19.2"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.4"
+    }
 }
