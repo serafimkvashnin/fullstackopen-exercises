@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
 
@@ -10,34 +12,7 @@ app.use(express.static('dist'));
 
 const BASE_URL = '/api/persons/';
 
-let persons = [
-    {
-        name: 'Ada Lovelace',
-        number: '39-44-53523',
-        id: '2',
-    },
-    {
-        name: 'Dan Abramov',
-        number: '12-43-234345',
-        id: '3',
-    },
-    {
-        name: 'Mary Poppendieck',
-        number: '39-23-6423122',
-        id: '4',
-    },
-    {
-        name: 'Arto Hellas',
-        number: '623-465477',
-        id: '5',
-    },
-];
-
-const generateId = () => {
-    return persons.length > 0
-        ? (Math.max(...persons.map((p) => p.id)) + 1).toString()
-        : '0';
-};
+const Person = require('./models/person');
 
 app.post(BASE_URL, (request, response) => {
     const body = request.body;
@@ -48,35 +23,38 @@ app.post(BASE_URL, (request, response) => {
         });
     }
 
-    const person = {
+    const person = new Person({
         name: body.name,
         number: body.number,
-        id: generateId(),
-    };
+    });
 
-    persons.push(person);
-    response.json(person);
+    person.save().then((savedPerson) => {
+        response.json(savedPerson);
+    });
 });
 
 app.get(BASE_URL, (request, response) => {
-    response.json(persons);
+    Person.find({}).then((persons) => {
+        response.json(persons);
+    });
 });
 
 app.get(`${BASE_URL}:id`, (request, response) => {
     const id = request.params.id;
-    const person = persons.find((p) => p.id === id);
-    if (person) {
-        response.json(person);
-    } else {
-        response.status(404).end();
-    }
+    Person.findById(id).then((person) => {
+        if (person) {
+            response.json(person);
+        } else {
+            response.status(404).end();
+        }
+    });
 });
 
 app.delete(`${BASE_URL}:id`, (request, response) => {
     const id = request.params.id;
-    persons = persons.filter((p) => p.id !== id);
-
-    response.status(204).end();
+    Person.findByIdAndDelete(id).then(() => {
+        response.status(204).end();
+    });
 });
 
 const unknownEndpoint = (request, response) => {
