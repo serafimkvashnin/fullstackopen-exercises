@@ -4,7 +4,7 @@
     "main": "index.js",
     "scripts": {
         "build:ui": "rm -rf dist && cd C:/Users/seraf/Projects/Web/fullstackopen-exercises/part2/course/a && npm run build && cp -r dist C:/Users/seraf/Projects/Web/fullstackopen-exercises/part3/course/a",
-        "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
+        "deploy:full": "npm run build:ui && git add . && git commit -m \"Deploy Notes app to Render\" && git push",
         "start": "node index.js",
         "dev": "nodemon index.js",
         "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,6 +13,7 @@
     "license": "MIT",
     "dependencies": {
         "cors": "^2.8.5",
+        "dotenv": "^16.4.5",
         "express": "^4.19.2",
         "mongoose": "^8.7.0"
     },
