@@ -15,17 +15,11 @@ const BASE_URL = '/api/persons/';
 const Person = require('./models/person');
 
 app.post(BASE_URL, (request, response, next) => {
-    const body = request.body;
-
-    if (!body.name) {
-        return response.status(400).json({
-            error: 'Name is missing',
-        });
-    }
+    const { name, number } = request.body;
 
     const person = new Person({
-        name: body.name,
-        number: body.number,
+        name,
+        number,
     });
 
     person
@@ -59,12 +53,10 @@ app.get(`${BASE_URL}:id`, (request, response, next) => {
 
 app.put(`${BASE_URL}:id`, (request, response, next) => {
     const id = request.params.id;
-    const body = request.body;
-    const person = {
-        name: body.name,
-        number: body.number,
-    };
-    Person.findByIdAndUpdate(id, person, { new: true })
+    const { name, number } = request.body;
+    const person = { name, number };
+
+    Person.findByIdAndUpdate(id, person, { new: true, runValidators: true })
         .then((updatedEntry) => {
             response.json(updatedEntry);
         })

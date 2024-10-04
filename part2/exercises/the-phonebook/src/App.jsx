@@ -13,10 +13,10 @@ const App = () => {
         });
     }, []);
 
-    const showInfoMessage = (text, duration) =>
+    const showInfoMessage = (text, duration = 5000) =>
         showMessage(text, 'info', duration);
 
-    const showErrorMessage = (text, duration) =>
+    const showErrorMessage = (text, duration = 5000) =>
         showMessage(text, 'error', duration);
 
     const showMessage = (text, state, duration) => {
@@ -43,10 +43,10 @@ const App = () => {
                     const newPerson = { name, number };
                     personsService
                         .updateEntry(person.id, newPerson)
-                        .then((returnedPerson) => {
+                        .then((response) => {
+                            const returnedPerson = response.data;
                             showInfoMessage(
-                                `Updated ${returnedPerson.name} number`,
-                                5000
+                                `Updated ${returnedPerson.name} number`
                             );
                             setPersons(
                                 persons.map((p) =>
@@ -55,16 +55,27 @@ const App = () => {
                                         : returnedPerson
                                 )
                             );
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            showErrorMessage(error.response.data.error);
                         });
                 }
                 return;
             }
         }
         const newPerson = { name, number };
-        personsService.createEntry(newPerson).then((returnedPerson) => {
-            showInfoMessage(`Added ${returnedPerson.name}`, 5000);
-            setPersons(persons.concat(returnedPerson));
-        });
+        personsService
+            .createEntry(newPerson)
+            .then((response) => {
+                const returnedPerson = response.data;
+                showInfoMessage(`Added ${returnedPerson.name}`);
+                setPersons(persons.concat(returnedPerson));
+            })
+            .catch((error) => {
+                console.log(error);
+                showErrorMessage(error.response.data.error);
+            });
     };
 
     const handleDeletePerson = (person) => {
@@ -72,13 +83,12 @@ const App = () => {
             personsService
                 .deleteEntry(person.id)
                 .then(() => {
-                    showInfoMessage(`Deleted ${person.name}`, 5000);
+                    showInfoMessage(`Deleted ${person.name}`);
                     setPersons(persons.filter((p) => p.id !== person.id));
                 })
                 .catch((error) => {
                     showErrorMessage(
-                        `Information of ${person.name} has already been removed`,
-                        5000
+                        `Information of ${person.name} has already been removed`
                     );
                 });
         }
