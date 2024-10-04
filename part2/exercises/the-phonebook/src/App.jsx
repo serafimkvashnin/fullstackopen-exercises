@@ -42,7 +42,7 @@ const App = () => {
                 ) {
                     const newPerson = { name, number };
                     personsService
-                        .updateEntry(person._id, newPerson)
+                        .updateEntry(person.id, newPerson)
                         .then((returnedPerson) => {
                             showInfoMessage(
                                 `Updated ${returnedPerson.name} number`,
@@ -50,7 +50,7 @@ const App = () => {
                             );
                             setPersons(
                                 persons.map((p) =>
-                                    p._id !== returnedPerson._id
+                                    p.id !== returnedPerson.id
                                         ? p
                                         : returnedPerson
                                 )
@@ -70,10 +70,10 @@ const App = () => {
     const handleDeletePerson = (person) => {
         if (confirm(`Do you really want to delete ${person.name}?`)) {
             personsService
-                .deleteEntry(person._id)
+                .deleteEntry(person.id)
                 .then(() => {
                     showInfoMessage(`Deleted ${person.name}`, 5000);
-                    setPersons(persons.filter((p) => p._id !== person._id));
+                    setPersons(persons.filter((p) => p.id !== person.id));
                 })
                 .catch((error) => {
                     showErrorMessage(
@@ -145,7 +145,7 @@ const Persons = ({ persons, onDeletePerson }) => (
         <div>
             {persons.map((person) => (
                 <PersonDetails
-                    key={person._id}
+                    key={person.id}
                     person={person}
                     onDeletePerson={onDeletePerson}
                 />
