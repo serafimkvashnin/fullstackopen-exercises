@@ -13,18 +13,26 @@ app.use(express.static('dist'));
 const Note = require('./models/note');
 
 app.get('/', (request, response) => {
-    response.send('<h1>Hello world!</h1>');
+    response.send('<h1><a href="/api/notes">Notes</a></h1>');
 });
 
 app.get('/api/notes', (request, response) => {
     Note.find({}).then((notes) => response.json(notes));
 });
 
-app.get('/api/notes/:id', (request, response) => {
+app.get('/api/notes/:id', (request, response, next) => {
     const id = request.params.id;
-    Note.findById(id).then((note) => {
-        response.json(note);
-    });
+    Note.findById(id)
+        .then((note) => {
+            if (note) {
+                response.json(note);
+            } else {
+                response.status(404).end();
+            }
+        })
+        .catch((error) => {
+            next(error);
+        });
 });
 
 app.post('/api/notes', (request, response) => {
@@ -46,18 +54,31 @@ app.post('/api/notes', (request, response) => {
     });
 });
 
-app.delete('/api/notes/:id', (request, response) => {
-    const id = request.params.id;
-    Note.findByIdAndDelete(id).then(() => response.status(204).end());
+app.put('/api/notes/:id', (request, response, next) => {
+    const body = request.body;
+
+    const note = {
+        content: body.content,
+        important: body.important,
+    };
+
+    Note.findByIdAndUpdate(request.params.id, note, { new: true })
+        .then((updatedNote) => {
+            response.json(updatedNote);
+        })
+        .catch((error) => next(error));
 });
 
-const unknownEndpoint = (request, response) => {
-    response.status(404).send({
-        error: 'Unknown endpoint',
-    });
-};
+app.delete('/api/notes/:id', (request, response, next) => {
+    const id = request.params.id;
+    Note.findByIdAndDelete(id)
+        .then(() => response.status(204).end())
+        .catch((error) => next(error));
+});
 
-app.use(unknownEndpoint);
+app.use(require('./middleware/unknownEndpoint'));
+
+app.use(require('./middleware/errorHandler'));
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
