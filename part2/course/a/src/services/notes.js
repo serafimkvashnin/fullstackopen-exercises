@@ -6,8 +6,8 @@ const getAll = () => getData(axios.get(baseUrl));
 
 const create = (note) => getData(axios.post(baseUrl, note));
 
-const patch = (id, note) => getData(axios.patch(`${baseUrl}/${id}`, note));
+const put = (id, note) => getData(axios.put(`${baseUrl}/${id}`, note));
 
 const getData = (promise) => promise.then((response) => response.data);
 
-export default { getAll, create, patch };
+export default { getAll, create, put };

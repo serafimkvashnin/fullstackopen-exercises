@@ -31,10 +31,11 @@ const App = () => {
 
     const handleToggleImportance = (note) => {
         const newNote = {
+            ...note,
             important: !note.important,
         };
         noteService
-            .patch(note.id, newNote)
+            .put(note.id, newNote)
             .then((returnedNote) =>
                 setNotes(
                     notes.map((n) => (n.id !== note.id ? n : returnedNote))
