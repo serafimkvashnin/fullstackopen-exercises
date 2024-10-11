@@ -1,11 +1,12 @@
 const notesRouter = require('express').Router();
-const Note = require('./models/note');
+const Note = require('../models/note');
 
-notesRouter.get('/', (request, response) => {
-  Note.find({}).then((notes) => response.json(notes));
+notesRouter.get('/', async (request, response) => {
+  const notes = await Note.find({});
+  response.json(notes);
 });
 
-notesRouter.post('/', (request, response, next) => {
+notesRouter.post('/', async (request, response) => {
   const body = request.body;
 
   const note = new Note({
@@ -13,50 +14,37 @@ notesRouter.post('/', (request, response, next) => {
     important: Boolean(body.important)
   });
 
-  note
-    .save()
-    .then((savedNote) => {
-      response.json(savedNote);
-    })
-    .catch((error) => next(error));
+  const savedNote = await note.save();
+  response.status(201).json(savedNote);
 });
 
-notesRouter.get('/:id', (request, response, next) => {
+notesRouter.get('/:id', async (request, response) => {
   const id = request.params.id;
 
-  Note.findById(id)
-    .then((note) => {
-      if (note) {
-        response.json(note);
-      } else {
-        response.status(404).end();
-      }
-    })
-    .catch((error) => {
-      next(error);
-    });
+  const note = await Note.findById(id);
+  if (note) {
+    response.json(note);
+  } else {
+    response.status(404).end();
+  }
 });
 
-notesRouter.put('/:id', (request, response, next) => {
+notesRouter.put('/:id', async (request, response) => {
   const { content, important } = request.body;
 
-  Note.findByIdAndUpdate(
+  const note = await Note.findByIdAndUpdate(
     request.params.id,
     { content, important },
     { new: true, runValidators: true, context: 'query' }
-  )
-    .then((updatedNote) => {
-      response.json(updatedNote);
-    })
-    .catch((error) => next(error));
+  );
+  response.json(note);
 });
 
-notesRouter.delete('/:id', (request, response, next) => {
+notesRouter.delete('/:id', async (request, response) => {
   const id = request.params.id;
 
-  Note.findByIdAndDelete(id)
-    .then(() => response.status(204).end())
-    .catch((error) => next(error));
+  await Note.findByIdAndDelete(id);
+  response.status(204).end();
 });
 
 module.exports = notesRouter;
