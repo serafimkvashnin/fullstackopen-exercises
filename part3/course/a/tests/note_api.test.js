@@ -18,91 +18,107 @@ const initialNotes = [
   }
 ];
 
-beforeEach(async () => {
-  await Note.deleteMany({});
-
-  for (let note of initialNotes) {
-    let noteObject = new Note(note);
-    await noteObject.save();
-  }
-});
-
-test('notes are returned as json', async () => {
-  await api
-    .get('/api/notes')
-    .expect(200)
-    .expect('Content-Type', /application\/json/);
-});
-
-test('update individual note', async () => {
-  let response = await api.get('/api/notes');
-  let note = response.body[0];
-  const modifiedContent = 'Updated note';
-  note = { ...note, content: modifiedContent };
-  const resultNote = await api
-    .put(`/api/notes/${note.id}`)
-    .send(note)
-    .expect(200);
-  assert(resultNote.body.content, modifiedContent);
-});
-
-test('view individual note', async () => {
-  const response = await api.get('/api/notes');
-  const noteToView = response.body[0];
-  const resultNote = await api
-    .get(`/api/notes/${noteToView.id}`)
-    .expect(200)
-    .expect('Content-Type', /application\/json/);
-
-  assert.deepStrictEqual(resultNote.body, noteToView);
-});
-
-test('delete individual note', async () => {
-  let response = await api.get('/api/notes');
-  const noteToDelete = response.body[0];
-  await api.delete(`/api/notes/${noteToDelete.id}`).expect(204);
-  response = await api.get('/api/notes');
-  assert.strictEqual(response.body.length, initialNotes.length - 1);
-});
-
-describe('api test', () => {
-  test('add two more notes test', async () => {
-    await api
-      .post('/api/notes')
-      .send({
-        content: 'Test note 3'
-      })
-      .expect(201);
-    await api
-      .post('/api/notes')
-      .send({
-        content: 'Test note 4'
-      })
-      .expect(201);
-    const response = await api.get('/api/notes');
-    assert.strictEqual(response.body.length, initialNotes.length + 2);
+describe('when there is initially some notes saved', () => {
+  beforeEach(async () => {
+    await Note.deleteMany({});
+    await Note.insertMany(initialNotes);
   });
 
-  test('note without content not added', async () => {
-    const note = {};
-    await api.post('/api/notes').send(note).expect(400);
+  test('notes are returned as json', async () => {
+    await api
+      .get('/api/notes')
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+  });
+
+  test('all notes are returned', async () => {
     const response = await api.get('/api/notes');
+
     assert.strictEqual(response.body.length, initialNotes.length);
   });
 
-  test('the first note contains "Test note 1" text', async () => {
+  test('a specific note is within the returned notes', async () => {
     const response = await api.get('/api/notes');
+    const noteToView = response.body[0];
+
     const contents = response.body.map((n) => n.content);
-    assert(contents.includes('Test note 1'));
+
+    assert(contents.includes(noteToView.content));
   });
 
-  test('delete all notes', async () => {
-    let response = await api.get('/api/notes');
-    response.body.forEach(async (n) => {
-      await api.delete(`/api/notes/${n.id}`);
+  describe('viewing a specific note', () => {
+    test('succeeds if a valid id', async () => {
+      const response = await api.get('/api/notes');
+      const noteToView = response.body[0];
+      const resultNote = await api
+        .get(`/api/notes/${noteToView.id}`)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+
+      assert.deepStrictEqual(resultNote.body, noteToView);
     });
-    response = await api.get('/api/notes');
-    assert.strictEqual(response.body.length, 0);
+
+    test('fails with 400 if id is invalid', async () => {
+      const invalidId = '5a3d5da59070081a82a3445';
+      await api.get(`/api/notes/${invalidId}`).expect(400);
+    });
+  });
+
+  describe('addition of a new note', () => {
+    test('succeeds with 201 if data is valid', async () => {
+      await api
+        .post('/api/notes')
+        .send({
+          content: 'Test note'
+        })
+        .expect(201);
+      const response = await api.get('/api/notes');
+      assert.strictEqual(response.body.length, initialNotes.length + 1);
+    });
+  });
+
+  test('fails with 400 if data is invalid', async () => {
+    const note = {};
+    await api.post('/api/notes').send(note).expect(400);
+  });
+
+  describe('deletion of a new note', () => {
+    test('succeeds with 204 if id is valid', async () => {
+      let response = await api.get('/api/notes');
+      const noteToDelete = response.body[0];
+      await api.delete(`/api/notes/${noteToDelete.id}`).expect(204);
+      response = await api.get('/api/notes');
+      assert.strictEqual(response.body.length, initialNotes.length - 1);
+    });
+
+    test('fails with 400 if id is invalid', async () => {
+      const invalidId = '5a3d5da59070081a82a3445';
+      await api.delete(`/api/notes/${invalidId}`).expect(400);
+    });
+  });
+
+  describe('updating a note', () => {
+    test('succeeds if id is valid', async () => {
+      let response = await api.get('/api/notes');
+      let note = response.body[0];
+      const modifiedContent = 'Updated note';
+      note = { ...note, content: modifiedContent };
+      const resultNote = await api
+        .put(`/api/notes/${note.id}`)
+        .send(note)
+        .expect(200);
+      assert(resultNote.body.content, modifiedContent);
+    });
+
+    test('fails with 400 if data is invalid', async () => {
+      let note = {};
+      await api.put(`/api/notes/${note.id}`).send(note).expect(400);
+    });
+
+    test('fails with 400 if id is invalid', async () => {
+      const invalidId = '5a3d5da59070081a82a3445';
+      await api.put(`/api/notes/${invalidId}`).expect(400);
+    });
   });
 });
 

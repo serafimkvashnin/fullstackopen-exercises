@@ -30,13 +30,11 @@ notesRouter.get('/:id', async (request, response) => {
 });
 
 notesRouter.put('/:id', async (request, response) => {
-  const { content, important } = request.body;
-
-  const note = await Note.findByIdAndUpdate(
-    request.params.id,
-    { content, important },
-    { new: true, runValidators: true, context: 'query' }
-  );
+  const note = await Note.findByIdAndUpdate(request.params.id, request.body, {
+    new: true,
+    runValidators: true,
+    context: 'query'
+  });
   response.json(note);
 });
 
