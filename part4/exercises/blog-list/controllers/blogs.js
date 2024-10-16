@@ -12,16 +12,29 @@ router.post('/', async (request, response) => {
     likes: request.body.likes || 0
   };
 
-  if (!data.title || !data.url) {
-    response.status(400).end();
-    return;
-  }
-
   const blog = new Blog(data);
 
   const savedBlog = await blog.save();
 
   response.status(201).json(savedBlog);
+});
+
+router.put('/:id', async (request, response) => {
+  const updated = await Blog.findByIdAndUpdate(
+    request.params.id,
+    request.body,
+    {
+      runValidators: true,
+      new: true,
+      context: 'query'
+    }
+  );
+  response.json(updated);
+});
+
+router.delete('/:id', async (request, response) => {
+  await Blog.findByIdAndDelete(request.params.id);
+  response.status(204).end();
 });
 
 module.exports = router;
