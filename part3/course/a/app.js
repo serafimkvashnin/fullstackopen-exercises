@@ -22,6 +22,8 @@ app.use(cors());
 app.use(express.static('dist'));
 
 app.use('/api/notes', require('./controllers/notes'));
+app.use('/api/users', require('./controllers/users'));
+app.use('/api/login', require('./controllers/login'));
 
 app.use(require('./middleware/unknownEndpoint'));
 app.use(require('./middleware/errorHandler'));

@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const app = require('../app');
 const supertest = require('supertest');
 const Note = require('../models/note');
+const User = require('../models/user');
 
 const api = supertest(app);
 
@@ -11,17 +12,27 @@ const initialNotes = [
   {
     content: 'Test note 1',
     important: true
-  },
-  {
-    content: 'Test note 2',
-    important: false
   }
 ];
 
-describe('when there is initially some notes saved', () => {
+describe('when there is initially one note', () => {
   beforeEach(async () => {
     await Note.deleteMany({});
+    await User.deleteMany({});
+
+    const savedUser = await new User({
+      username: 'NoteUser',
+      password: 'NoteUser'
+    }).save();
+
+    initialNotes[0] = {
+      ...initialNotes[0],
+      user: savedUser.id
+    };
+
     await Note.insertMany(initialNotes);
+    const u = await User.find({});
+    console.log('Notes', u);
   });
 
   test('notes are returned as json', async () => {
@@ -66,12 +77,8 @@ describe('when there is initially some notes saved', () => {
 
   describe('addition of a new note', () => {
     test('succeeds with 201 if data is valid', async () => {
-      await api
-        .post('/api/notes')
-        .send({
-          content: 'Test note'
-        })
-        .expect(201);
+      const note = initialNotes[0];
+      await api.post('/api/notes').send(note).expect(201);
       const response = await api.get('/api/notes');
       assert.strictEqual(response.body.length, initialNotes.length + 1);
     });
