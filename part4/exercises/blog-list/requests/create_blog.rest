@@ -2,8 +2,8 @@ POST http://localhost:3001/api/blogs
 content-type: application/json
 
 {
-    "title": "First class tests",
-    "author": "Robert C. Martin",
+    "title": "Using middleware to extract token",
+    "author": "Martin C. Robert",
     "url": "https://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html",
     "likes": 10
 }
