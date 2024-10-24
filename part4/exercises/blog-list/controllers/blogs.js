@@ -9,17 +9,10 @@ router.get('/', async (request, response) => {
 });
 
 router.post('/', async (request, response) => {
-  const token = request.token;
-  if (!token) {
+  const user = request.user;
+  if (!user) {
     return response.status(401).json({ error: 'Bearer token required' });
   }
-
-  const decodedToken = jwt.verify(token, process.env.SECRET);
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'Invalid token' });
-  }
-
-  const user = await User.findById(decodedToken.id);
 
   const data = {
     ...request.body,
@@ -51,8 +44,18 @@ router.put('/:id', async (request, response) => {
 });
 
 router.delete('/:id', async (request, response) => {
-  await Blog.findByIdAndDelete(request.params.id);
-  response.status(204).end();
+  const user = request.user;
+  if (!user) {
+    return response.status(401).json({ error: 'Bearer token required' });
+  }
+
+  const blog = await Blog.findById(request.params.id);
+  if (blog.user.toString() === user.id.toString()) {
+    await blog.deleteOne();
+    return response.status(204).end();
+  }
+
+  response.status(400).json({ error: "You cannot delete someone else's blog" });
 });
 
 module.exports = router;
