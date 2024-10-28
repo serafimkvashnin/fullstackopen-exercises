@@ -9,6 +9,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [notification, setNotification] = useState(null);
+  const [loginVisible, setLoginVisible] = useState(false);
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -71,21 +72,31 @@ const App = () => {
     }
   };
 
+  const loginForm = () => {
+    const hideWhenVisible = { display: loginVisible ? 'none' : '' };
+    const showWhenVisible = { display: loginVisible ? '' : 'none' };
+    return (
+      <>
+        <h2>Log in to application</h2>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setLoginVisible(true)}>Log in</button>
+        </div>
+        <div style={showWhenVisible}>
+          <Login onLogin={handleLogin} />
+          <button onClick={() => setLoginVisible(false)}>Cancel</button>
+        </div>
+      </>
+    );
+  };
+
   return (
     <div>
+      <Notification message={notification} />
       {user === null ? (
-        <>
-          <h2>Log in to application</h2>
-          <Notification message={notification} />
-          <Login onLogin={handleLogin} />
-        </>
+        loginForm()
       ) : (
         <>
           <h2>Blogs</h2>
-          <Notification
-            message={notification}
-            onClose={() => setNotification(null)}
-          />
           <p>
             {user.name} logged in <button onClick={handleLogout}>logout</button>
           </p>
