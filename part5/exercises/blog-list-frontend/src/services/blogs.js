@@ -22,4 +22,19 @@ const add = async (data) => {
   return response.data;
 };
 
-export default { getAll, setToken, add };
+const update = async (blog) => {
+  const response = await axios.put(`${baseUrl}/${blog.id}`, blog);
+  return response.data;
+};
+
+const remove = async (blog) => {
+  const config = {
+    headers: {
+      Authorization: bearerToken
+    }
+  };
+  const response = await axios.delete(`${baseUrl}/${blog.id}`, config);
+  return response.data;
+};
+
+export default { getAll, setToken, add, update, remove };
