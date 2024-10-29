@@ -46,7 +46,7 @@ const App = () => {
       .then((returnedNote) =>
         setNotes(notes.map((n) => (n.id !== note.id ? n : returnedNote)))
       )
-      .catch((error) => {
+      .catch(() => {
         setErrorMessage(
           `The note '${note.content}' was already deleted from server!`
         );
@@ -60,7 +60,7 @@ const App = () => {
       setUser(user);
       window.localStorage.setItem('loggedUser', JSON.stringify(user));
       noteService.setToken(user.token);
-    } catch (error) {
+    } catch {
       setErrorMessage('Invalid username or password');
     }
   };
