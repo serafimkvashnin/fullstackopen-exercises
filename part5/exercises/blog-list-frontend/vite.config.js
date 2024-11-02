@@ -11,7 +11,6 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: 'http://localhost:3001',
-
         changeOrigin: true
       }
     }
@@ -19,9 +18,7 @@ export default defineConfig({
 
   test: {
     environment: 'jsdom',
-
     globals: true,
-
     setupFiles: './testSetup.js'
   }
 });

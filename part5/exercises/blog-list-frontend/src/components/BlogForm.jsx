@@ -12,18 +12,18 @@ const BlogForm = ({ onAddBlog }) => {
 
   return (
     <form onSubmit={handleAddBlog}>
-      <div>
+      <label>
         Title
         <input type="text" name="title" />
-      </div>
-      <div>
+      </label>
+      <label>
         Author
         <input type="text" name="author" />
-      </div>
-      <div>
+      </label>
+      <label>
         Url
         <input type="text" name="url" />
-      </div>
+      </label>
       <button type="submit">Create</button>
     </form>
   );
