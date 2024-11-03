@@ -26,7 +26,7 @@ const Blog = ({ user, blog, onLike, onRemove }) => {
       {detailsVisible && (
         <>
           <p>{blog.url}</p>
-          <p>
+          <p className="likes">
             {blog.likes} <button onClick={() => onLike(blog)}>Like</button>
           </p>
           <p>{blog.user.name}</p>

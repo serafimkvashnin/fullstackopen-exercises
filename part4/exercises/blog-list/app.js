@@ -30,6 +30,10 @@ app.use(
 app.use('/api/users', require('./controllers/users'));
 app.use('/api/login', require('./controllers/login'));
 
+if (process.env.NODE_ENV === 'test') {
+  app.use('/api/testing', require('./controllers/testing'));
+}
+
 app.use(require('./middleware/errorHandler'));
 
 module.exports = app;

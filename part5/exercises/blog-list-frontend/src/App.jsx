@@ -1,16 +1,26 @@
 import { useState, useEffect, useRef } from 'react';
+
 import Blog from './components/Blog';
+
 import blogService from './services/blogs';
+
 import loginService from './services/login';
+
 import LoginForm from './components/LoginForm';
+
 import Notification from './components/Notification';
+
 import Togglable from './components/Togglable';
+
 import BlogForm from './components/BlogForm';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
+
   const [user, setUser] = useState(null);
+
   const [notification, setNotification] = useState(null);
+
   const blogToggleRef = useRef();
 
   useEffect(() => {
@@ -19,9 +29,12 @@ const App = () => {
 
   useEffect(() => {
     const loggedInUserJSON = window.localStorage.getItem('user');
+
     if (loggedInUserJSON) {
       const loggedInUser = JSON.parse(loggedInUserJSON);
+
       setUser(loggedInUser);
+
       blogService.setToken(loggedInUser.token);
     }
   }, []);
@@ -34,7 +47,9 @@ const App = () => {
 
   const showNotification = (text, state, duration) => {
     setNotification({ text, state });
+
     clearTimeout();
+
     setTimeout(() => {
       setNotification(null);
     }, duration);
@@ -43,8 +58,11 @@ const App = () => {
   const handleLogin = async (credentials) => {
     try {
       const loggedInUser = await loginService.login(credentials);
+
       setUser(loggedInUser);
+
       blogService.setToken(loggedInUser.token);
+
       window.localStorage.setItem('user', JSON.stringify(loggedInUser));
     } catch (exception) {
       showErrorNotification('Invalid username or password');
@@ -53,16 +71,22 @@ const App = () => {
 
   const handleLogout = () => {
     setUser(null);
+
     blogService.setToken('');
+
     window.localStorage.removeItem('user');
   };
 
   const handleAddBlog = async ({ title, author, url }) => {
     try {
       const blog = await blogService.add({ title, author, url });
+
       const blogs = await blogService.getAll();
+
       setBlogs(blogs);
+
       blogToggleRef.current.toggleVisibility();
+
       showInfoNotification(`A new blog ${blog.title} added`);
     } catch (exception) {
       showErrorNotification('Error adding new blog');
@@ -73,10 +97,14 @@ const App = () => {
     try {
       const editedBlog = {
         ...blog,
+
         user: blog.user.id,
+
         likes: blog.likes + 1
       };
+
       const updatedBlog = await blogService.update(editedBlog);
+
       setBlogs(
         blogs.map((b) =>
           b.id === updatedBlog.id ? { ...b, likes: updatedBlog.likes } : b
@@ -91,6 +119,7 @@ const App = () => {
     if (window.confirm(`Remove ${blog.title} by ${blog.user.name}`)) {
       try {
         await blogService.remove(blog);
+
         setBlogs(blogs.filter((b) => b.id !== blog.id));
       } catch (exception) {
         showErrorNotification('Error deleting the blog');
@@ -104,9 +133,11 @@ const App = () => {
   return (
     <div>
       <Notification message={notification} />
+
       {user === null ? (
         <div>
           <h2>Log in to application</h2>
+
           <Togglable buttonLabel="Login">
             <LoginForm onLogin={handleLogin} />
           </Togglable>
@@ -114,12 +145,15 @@ const App = () => {
       ) : (
         <div>
           <h2>Blogs</h2>
+
           <p>
             {user.name} logged in <button onClick={handleLogout}>logout</button>
           </p>
+
           <Togglable buttonLabel="Add blog" ref={blogToggleRef}>
             <BlogForm onAddBlog={handleAddBlog} />
           </Togglable>
+
           {getBlogsSortedByLikesDesc().map((blog) => (
             <Blog
               key={blog.id}
