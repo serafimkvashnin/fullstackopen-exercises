@@ -6,7 +6,7 @@ const Notification = ({ message, onClose }) => {
   }
 
   return (
-    <div className="error">
+    <div className="notification">
       <div className="message">{message}</div>
       <div>
         <button onClick={onClose}>Close</button>
