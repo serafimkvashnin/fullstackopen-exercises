@@ -33,9 +33,7 @@ const noteReducer = (state = [], action) => {
         ...noteToChange,
         important: !noteToChange.important
       };
-      return state.map((note) =>
-        note.id === action.payload.id ? changedNote : note
-      );
+      return state.map((note) => (note.id === id ? changedNote : note));
     }
     default:
       return state;
