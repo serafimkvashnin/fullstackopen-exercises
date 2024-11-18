@@ -1,18 +1,24 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { createStore } from 'redux';
 import noteReducer from './reducers/noteReducer';
 import App from './App';
 import { Provider } from 'react-redux';
+import filterReducer from './reducers/filterReducer';
+import { configureStore } from '@reduxjs/toolkit';
 
-const store = createStore(noteReducer);
+const reducer = {
+  notes: noteReducer,
+  filter: filterReducer
+};
+
+const store = configureStore({ reducer });
 
 store.dispatch({
   type: 'NEW_NOTE',
   payload: {
     content: 'the app state is in redux store',
     important: true,
-    id: 1
+    id: 3
   }
 });
 
@@ -21,7 +27,7 @@ store.dispatch({
   payload: {
     content: 'state changes are made with actions',
     important: false,
-    id: 2
+    id: 4
   }
 });
 

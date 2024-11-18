@@ -5,19 +5,15 @@ describe('noteReducer', () => {
   test('returns new state with action NEW_NOTE', () => {
     const state = [];
     const action = {
-      type: 'NEW_NOTE',
-      payload: {
-        content: 'new note',
-        important: false,
-        id: 1
-      }
+      type: 'notes/createNote',
+      payload: 'new note'
     };
 
     deepFreeze(state);
     const newState = noteReducer(state, action);
 
     expect(newState).toHaveLength(1);
-    expect(newState).toContainEqual(action.payload);
+    expect(newState.map((s) => s.content)).toContainEqual(action.payload);
   });
   test('returns new state with action TOGGLE_IMPORTANCE', () => {
     const state = [
@@ -34,10 +30,8 @@ describe('noteReducer', () => {
     ];
 
     const action = {
-      type: 'TOGGLE_IMPORTANCE',
-      payload: {
-        id: 2
-      }
+      type: 'notes/toggleImportanceOf',
+      payload: 2
     };
 
     deepFreeze(state);
