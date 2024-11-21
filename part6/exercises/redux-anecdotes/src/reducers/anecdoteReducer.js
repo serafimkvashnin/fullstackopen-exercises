@@ -28,19 +28,15 @@ const anecdoteSlice = createSlice({
     voteFor(state, action) {
       const anecdote = state.find((a) => a.id === action.payload);
       anecdote.votes += 1;
-      return state;
     },
     newAnecdote(state, action) {
-      const anecdote = {
-        content: action.payload,
-        votes: 0,
-        id: getId()
-      };
-      state.push(anecdote);
-      return state;
+      state.push(action.payload);
+    },
+    setAnecdotes(state, action) {
+      return action.payload;
     }
   }
 });
 
-export const { voteFor, newAnecdote } = anecdoteSlice.actions;
+export const { voteFor, newAnecdote, setAnecdotes } = anecdoteSlice.actions;
 export default anecdoteSlice.reducer;
